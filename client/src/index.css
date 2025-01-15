@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
+
+:root {
+  --main-color: pink;
+  --dark-main-color: rgb(194, 149, 157);
+}
+
+body {
+  background-color: var(--main-color);
+  font-family: "Jersey 15", serif;
+}
+
+
+.text-color-pink {
+  color: var(--main-color);
+}
+
+.form-select:focus,
+.form-control:focus {
+  border-color: var(--dark-main-color);
+  outline: 0;
+  box-shadow: 0 0 0 .25rem var(--dark-main-color);
+}
+
+.notifications {
+  background-color: var(--main-color);
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.date {
+  font-size: 12px;
+  color: var(--dark-main-color);
+}
