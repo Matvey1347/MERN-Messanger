@@ -18,8 +18,10 @@ const ChatPage = () => {
   return (
     <>
       <Stack direction="horizontal" gap={4}>
-        <Stack className="flex-grow-0">
-          
+        <Stack
+          className="flex-grow-0"
+          style={{ minWidth: '20vw' }}
+        >
           {
             isUserChatsLoading
               ? <Loader />

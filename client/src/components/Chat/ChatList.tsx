@@ -64,16 +64,18 @@ const ChatList = ({ chats, user }: { chats: Chat[], user: User | null }) => {
           const userId = user?._id;
           if (userId) {
             const chat = editingChat as EditingChat;
+            const newMembers = formValues.members.includes(userId) ? formValues.members : [...formValues.members, userId];
+            
             if (!chat?._id) {
               createChat({
                 name: formValues.name,
-                members: [...formValues.members, userId]
+                members: newMembers
               });
               setShowChatFormModal(false);
             } else {
               updateChat({
                 name: formValues.name,
-                members: [...formValues.members, userId]
+                members: newMembers
               });
               setShowChatFormModal(false);
             }

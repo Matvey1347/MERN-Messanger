@@ -82,7 +82,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     if (userId) {
       const res = await getRequest(`${baseUrl}/users/`);
       if (res.error) return setUserChatsError(res.message);
-      setUsers(res.data);
+      setUsers(res.data.filter((u: User) => u._id !== userId));
     }
   }
 

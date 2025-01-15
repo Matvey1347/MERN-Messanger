@@ -34,5 +34,10 @@ export interface EditingChat {
 }
 
 export interface Message {
-  text: string
+  chatId: string,
+  senderId: string,
+  senderName: string,
+  text: string,
+  _id: string,
+  createdAt: string,
 }

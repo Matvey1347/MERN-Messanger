@@ -15,7 +15,6 @@ const ChatItem = ({ chat, onClickDelete, onClickEdit, onClickItem }: ChatItemPro
   return (
     <Card
       className="py-2 px-2 text-start"
-      style={{ minWidth: '30vw' }}
       role="button"
       onClick={() => {
         onClickItem(chat);
