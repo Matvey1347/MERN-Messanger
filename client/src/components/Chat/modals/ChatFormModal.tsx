@@ -8,22 +8,37 @@ import { User } from '../../../interfaces/Auth';
 import { EditingChat } from '../../../interfaces/Chat';
 import ErrorPreview from '../../ErrorPreview';
 
+import Select from 'react-select';
+import makeAnimated from 'react-select/animated';
+import { GroupBase } from 'react-select';
+
 interface ChatModalProps {
   show: boolean,
   setShow: (show: boolean) => void,
   onSubmit: (formValues: EditingChat) => void,
 }
 
+const animatedComponents = makeAnimated();
+
+type OptionType = {
+  value: string;
+  label: string;
+};
+
+const options = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' }
+]
+
 function ChatFormModal({ show, setShow, onSubmit }: ChatModalProps) {
   const { editingChat, isShowModalChatLoader, users } = useContext(ChatContext);
-
   const [formValues, setFormValues] = useState<EditingChat>(
     {
       name: "",
       members: []
     }
   );
-
   const [formError, setFormError] = useState("");
 
   useEffect(() => {
@@ -69,18 +84,29 @@ function ChatFormModal({ show, setShow, onSubmit }: ChatModalProps) {
                       setFormValues({ ...formValues, name: e.target.value })
                     }}
                   />
-                  <Form.Select
-                    multiple
-                    value={formValues.members}
-                    onChange={(e) => {
-                      const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                      setFormValues({ ...formValues, members: selectedOptions });
-                    }}
-                  >
-                    {users.map((user: User) => {
-                      return <option value={user._id} key={user._id}>{user.name + " -> " + user.email}</option>
+                  <Select
+                    closeMenuOnSelect={false}
+                    components={animatedComponents}
+                    value={formValues.members.filter((id) => {
+                      const user = users.find(u => u._id === id);
+                      if (!user?.name) return false; else return id;
+                    }).map(id => {
+                      const user = users.find(u => u._id === id);
+                      return {
+                        value: id,
+                        label: user?.name
+                      };
                     })}
-                  </Form.Select>
+                    isMulti
+                    options={users.map((user: User) => ({
+                      value: user._id,
+                      label: user.name
+                    }))}
+                    onChange={(selectedOptions) => {
+                      const selectedOptionIds = selectedOptions.map(option => option.value);
+                      setFormValues({ ...formValues, members: selectedOptionIds });
+                    }}
+                  />
                 </Form>
                 <ErrorPreview
                   error={formError}
