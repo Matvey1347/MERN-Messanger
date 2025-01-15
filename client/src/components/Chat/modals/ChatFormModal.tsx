@@ -10,7 +10,6 @@ import ErrorPreview from '../../ErrorPreview';
 
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import { GroupBase } from 'react-select';
 
 interface ChatModalProps {
   show: boolean,
@@ -20,16 +19,6 @@ interface ChatModalProps {
 
 const animatedComponents = makeAnimated();
 
-type OptionType = {
-  value: string;
-  label: string;
-};
-
-const options = [
-  { value: 'chocolate', label: 'Chocolate' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
-]
 
 function ChatFormModal({ show, setShow, onSubmit }: ChatModalProps) {
   const { editingChat, isShowModalChatLoader, users } = useContext(ChatContext);

@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { ChatContext } from '../../../context/ChatContext';
@@ -16,7 +16,7 @@ function DeleteChatModal({ show, setShow, onSubmit }: ChatModalProps) {
     <>
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Delete Chat {editingChat?.name}</Modal.Title>
+          <Modal.Title>Delete Chat {'name' in editingChat ? editingChat?.name : ""}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {isShowModalChatLoader ? <Loader /> : "Wow, do you really want to delete the chat ?"}
