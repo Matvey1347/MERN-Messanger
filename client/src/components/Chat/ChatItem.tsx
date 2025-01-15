@@ -6,12 +6,13 @@ import { FaEdit } from "react-icons/fa";
 
 interface ChatItemProps {
   chat: Chat,
+  unreadMessages: { [chatId: string]: number },
   onClickDelete: (chat: Chat) => void,
   onClickEdit: (chat: Chat) => void,
   onClickItem: (chat: Chat) => void,
 }
 
-const ChatItem = ({ chat, onClickDelete, onClickEdit, onClickItem }: ChatItemProps) => {
+const ChatItem = ({ chat, unreadMessages, onClickDelete, onClickEdit, onClickItem }: ChatItemProps) => {
   return (
     <Card
       className="py-2 px-2 text-start"
@@ -22,24 +23,17 @@ const ChatItem = ({ chat, onClickDelete, onClickEdit, onClickItem }: ChatItemPro
     >
       <Stack
         direction="horizontal"
-        className="d-flex justify-content-between mb-2"
+        className="d-flex justify-content-between"
       >
         {chat.name}
         <Stack direction="horizontal" gap={3}>
+          <div className="notifications text-white">
+            <span>{unreadMessages[chat._id] || 0}</span>
+          </div>
           <MdDelete onClick={() => onClickDelete(chat)} />
           <FaEdit onClick={() => onClickEdit(chat)} />
         </Stack>
       </Stack>
-      <Stack
-        direction="horizontal"
-        className="d-flex justify-content-between"
-      >
-        <div className="date">12/11/2024 10:00</div>
-        <div className="notifications text-white">
-          <span>2</span>
-        </div>
-      </Stack>
-
     </Card>
   );
 }

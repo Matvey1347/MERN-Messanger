@@ -14,7 +14,7 @@ app.use("/api/messages", require("./Routes/messageRoute"));
 
 const port = process.env.PORT;
 
-app.listen(port, (req, res) => {
+app.listen(port, '0.0.0.0', (req, res) => {
   console.log(`Running on ... ${port}`);
 })
 

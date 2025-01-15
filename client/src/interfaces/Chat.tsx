@@ -13,6 +13,8 @@ export interface ChatContextParams {
   messagesError: string,
   isMessagesLoading: boolean,
 
+  onlineUsers: OnlineUser[],
+  unreadMessages: { [chatId: string]: number },
   sendMessage: (newMessage: NewMessage) => void,
 
   setCurrentChat: (chat: Chat) => void
@@ -48,4 +50,9 @@ export interface NewMessage {
   text: string,
   chatId: string,
   senderId: string,
+}
+
+export interface OnlineUser {
+  socketId: string,
+  userId: string
 }

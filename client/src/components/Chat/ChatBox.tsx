@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
 import { ChatContext } from "../../context/ChatContext";
 import ErrorPreview from "../ErrorPreview";
 import Loader from "../Loader";
 import { Button, Card, Stack } from "react-bootstrap";
-import { Message } from "../../interfaces/Chat";
+import { Message, OnlineUser } from "../../interfaces/Chat";
 import { AuthContext } from "../../context/AuthContext";
 import InputEmoji from "react-input-emoji";
 import { GrSend } from "react-icons/gr";
@@ -12,11 +12,24 @@ import { GrSend } from "react-icons/gr";
 const ChatBox = () => {
   const { user } = useContext(AuthContext);
   const {
-    currentChat, messages, messagesError, isMessagesLoading, sendMessage
+    currentChat, messages, messagesError, isMessagesLoading, onlineUsers, sendMessage
   } = useContext(ChatContext);
 
   const [textMessage, setTextMessage] = useState("");
   const [isError, setIsError] = useState(false);
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages])
+
 
   return (
     <Stack>
@@ -35,9 +48,17 @@ const ChatBox = () => {
                   if (!isSameSender) {
                     acc.push(
                       <div className={curUserMessageWrapClasses} key={message._id}>
-                        <div className="sender-preview">{message.senderName}</div>
+                        <div className="sender-preview">
+                          {message.senderName}
+
+                          {onlineUsers.map((user: OnlineUser, i: number) => {
+                            if (user.userId === message.senderId) {
+                              return <span className="online" key={i}></span>
+                            }
+                          })}
+                        </div>
                         <div>
-                          <div className="message">
+                          <div className="message mb-1">
                             {message.text}
                           </div>
                         </div>
@@ -46,7 +67,7 @@ const ChatBox = () => {
                   } else {
                     const lastElement = acc[acc.length - 1];
                     const newMessage = (
-                      <div className="message">
+                      <div className="message mb-1">
                         {message.text}
                       </div>
                     );
@@ -54,10 +75,10 @@ const ChatBox = () => {
                     acc[acc.length - 1] = (
                       <div className={curUserMessageWrapClasses} key={lastElement.key}>
                         <div>{lastElement.props.children[0]}</div>
-                        <Stack gap={1} className="flex-grow-0">
+                        <div className="flex-grow-0 ">
                           {lastElement.props.children[1].props.children}
                           {newMessage}
-                        </Stack>
+                        </div>
                       </div>
                     );
                   }
@@ -65,6 +86,7 @@ const ChatBox = () => {
                   return acc;
                 }, [])
               }
+              <div ref={messagesEndRef} />
             </Stack>
           )}
           <ErrorPreview

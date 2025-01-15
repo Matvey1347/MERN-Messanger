@@ -1,7 +1,8 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { baseUrl, deleteRequest, getRequest, postRequest, putRequest } from "../utils/services";
 import { User } from "../interfaces/Auth";
-import { Chat, ChatContextParams, EditingChat, Message, NewMessage } from "../interfaces/Chat";
+import { Chat, ChatContextParams, EditingChat, Message, NewMessage, OnlineUser } from "../interfaces/Chat";
+import { io } from "socket.io-client";
 
 const defEditingChatValue = { name: "", members: [] };
 const defChatValue = { _id: "", members: [], name: "" };
@@ -19,7 +20,10 @@ export const ChatContext = createContext<ChatContextParams>({
   messagesError: "",
   isMessagesLoading: false,
 
+  onlineUsers: [],
+  unreadMessages: {},
   sendMessage: () => { },
+
 
   setCurrentChat: () => { },
   setUserChatsError: () => { },
@@ -42,16 +46,73 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
   const [messagesError, setMessagesError] = useState<string>("");
   const [isMessagesLoading, setMessagesLoading] = useState<boolean>(false);
 
+  const [newMessage, setNewMessage] = useState<Message>();
+
   const [editingChat, setEditingChat] = useState<EditingChat | {}>(defEditingChatValue);
   const [isShowModalChatLoader, setIsShowModalChatLoader] = useState(false);
+
+  const [socket, setSocket] = useState<any>(null);
+  const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
+
+  const [unreadMessages, setUnreadMessages] = useState<{ [chatId: string]: number }>({});
 
   useEffect(() => {
     getUserChats();
     getUsers();
+
+    const newSocket = io("http://localhost:3000");
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    }
   }, [user]);
 
   useEffect(() => {
+    if (socket === null) return;
+    socket.emit("addNewUser", user?._id);
+    socket.on("getOnlineUsers", (onlineUsers: OnlineUser[]) => {
+      setOnlineUsers(onlineUsers)
+    });
+
+    return () => {
+      socket.off("getOnlineUsers");
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    if (socket === null) return;
+    socket.emit("sendMessage", {
+      message: newMessage,
+      chat: currentChat,
+      user
+    });
+
+  }, [newMessage]);
+
+  useEffect(() => {
+    if (socket === null) return;
+
+    socket.on("getMessage", (message: Message) => {
+      console.log("message", currentChat, message.chatId, currentChat._id, message.chatId === currentChat._id);
+      if ((message.chatId == currentChat._id) && (message.senderId !== user?._id)) setMessages(prev => [...prev, message]);
+    });
+
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [socket, currentChat]);
+
+  // const resetUnreadCount = (chatId: string) => {
+  //   setUnreadMessages(prev => ({
+  //     ...prev,
+  //     [chatId]: 0
+  //   }));
+  // };
+
+  useEffect(() => {
     getMesages();
+    // resetUnreadCount(currentChat._id);
   }, [currentChat]);
 
   const getMesages = async () => {
@@ -129,12 +190,10 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
   }
 
   const sendMessage = async (newMessage: NewMessage) => {
-    setMessagesLoading(true);
-
     const res = await postRequest(`${baseUrl}/messages`, JSON.stringify(newMessage));
-    setMessagesLoading(false);
     if (res.error) return setMessagesError(res.message);
-    await getMesages();
+    setNewMessage(res.data);
+    setMessages(prev => [...prev, res.data]);
   }
 
   const handleSetCurrentChat = useCallback((chat: Chat) => {
@@ -160,6 +219,8 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     messagesError,
     isMessagesLoading,
 
+    unreadMessages,
+    onlineUsers,
     sendMessage,
 
     setCurrentChat: handleSetCurrentChat,

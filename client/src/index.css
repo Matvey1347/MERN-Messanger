@@ -3,7 +3,8 @@
 :root {
   --main-color: pink;
   --dark-main-color: rgb(194, 149, 157);
-  --white: #fff
+  --white: #fff;
+  --green: rgb(37, 170, 37);
 }
 
 body {
@@ -52,11 +53,18 @@ body {
   color: var(--white);
 }
 
-.sender-preview {
-  font-size: 14px;
+.cur-user-messages .flex-grow-0 {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
 }
 
-.other-messages {
+.sender-preview {
+  font-size: 14px;
+  position: relative;
+}
+
+.cur-user-messages {
   display: flex;
   flex-direction: column;
   align-items: end;
@@ -83,4 +91,18 @@ body {
   width: 20px;
   height: 20px;
   margin-left: -1px;
+}
+
+.online {
+  width: 10px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--green);
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -12px;
 }
