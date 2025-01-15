@@ -13,6 +13,8 @@ export interface ChatContextParams {
   messagesError: string,
   isMessagesLoading: boolean,
 
+  sendMessage: (newMessage: NewMessage) => void,
+
   setCurrentChat: (chat: Chat) => void
   setUserChatsError: (error: string) => void,
   setEditingChat: (chat: EditingChat | {}) => void,
@@ -34,10 +36,16 @@ export interface EditingChat {
 }
 
 export interface Message {
+  text: string,
   chatId: string,
   senderId: string,
   senderName: string,
-  text: string,
   _id: string,
   createdAt: string,
+}
+
+export interface NewMessage {
+  text: string,
+  chatId: string,
+  senderId: string,
 }

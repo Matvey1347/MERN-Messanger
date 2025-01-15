@@ -62,3 +62,25 @@ body {
   align-items: end;
   justify-content: end;
 }
+
+.send-btn {
+  border-radius: 50%;
+  min-width: 40px;
+  max-width: 40px;
+  height: 40px;
+  background: var(--main-color);
+  border-color: var(--dark-main-color);
+  padding: 0;
+}
+
+.send-btn:active,
+.send-btn:hover {
+  background: var(--main-color) !important;
+  border-color: var(--main-color) !important;
+}
+
+.send-btn svg {
+  width: 20px;
+  height: 20px;
+  margin-left: -1px;
+}

@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { baseUrl, deleteRequest, getRequest, postRequest, putRequest } from "../utils/services";
 import { User } from "../interfaces/Auth";
-import { Chat, ChatContextParams, EditingChat, Message } from "../interfaces/Chat";
+import { Chat, ChatContextParams, EditingChat, Message, NewMessage } from "../interfaces/Chat";
 
 const defEditingChatValue = { name: "", members: [] };
 const defChatValue = { _id: "", members: [], name: "" };
@@ -18,6 +18,8 @@ export const ChatContext = createContext<ChatContextParams>({
   messages: [],
   messagesError: "",
   isMessagesLoading: false,
+
+  sendMessage: () => { },
 
   setCurrentChat: () => { },
   setUserChatsError: () => { },
@@ -56,7 +58,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     const curChatId = currentChat._id;
     if (curChatId) {
       setMessagesLoading(true);
-  
+
       const res = await getRequest(`${baseUrl}/messages/${curChatId}`);
       setMessagesLoading(false);
       if (res.error) return setMessagesError(res.message);
@@ -126,6 +128,15 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     }
   }
 
+  const sendMessage = async (newMessage: NewMessage) => {
+    setMessagesLoading(true);
+
+    const res = await postRequest(`${baseUrl}/messages`, JSON.stringify(newMessage));
+    setMessagesLoading(false);
+    if (res.error) return setMessagesError(res.message);
+    await getMesages();
+  }
+
   const handleSetCurrentChat = useCallback((chat: Chat) => {
     setCurrentChat(chat);
   }, []);
@@ -148,6 +159,8 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     messages,
     messagesError,
     isMessagesLoading,
+
+    sendMessage,
 
     setCurrentChat: handleSetCurrentChat,
     setUserChatsError: handleSetUserChatsError,

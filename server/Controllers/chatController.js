@@ -1,5 +1,6 @@
 const chatModel = require("../Models/chartModel");
 const userModel = require("../Models/userModel");
+const messageModel = require("../Models/messageModel");
 const { errorMessages, successMessages } = require("../errorMessages");
 const sendResponse = require("../middleware/responseHandler");
 
@@ -53,6 +54,7 @@ const deleteChat = async (req, res) => {
   const chatId = req.params.chatId;
   try {
     await chatModel.deleteOne({ _id: chatId });
+    await messageModel.deleteMany({ chatId });
     return sendResponse(res, successMessages.chatDeleteSuccessfully, 200);
   } catch (error) {
     console.log(error);
