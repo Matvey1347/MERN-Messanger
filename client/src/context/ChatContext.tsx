@@ -1,9 +1,10 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { baseUrl, deleteRequest, getRequest, postRequest, putRequest } from "../utils/services";
 import { User } from "../interfaces/Auth";
-import { Chat, ChatContextParams, EditingChat } from "../interfaces/Chat";
+import { Chat, ChatContextParams, EditingChat, Message } from "../interfaces/Chat";
 
 const defEditingChatValue = { name: "", members: [] };
+const defChatValue = { _id: "", members: [], name: "" };
 
 export const ChatContext = createContext<ChatContextParams>({
   userChats: [],
@@ -12,10 +13,15 @@ export const ChatContext = createContext<ChatContextParams>({
   isUserChatsLoading: false,
   isShowModalChatLoader: false,
   editingChat: defEditingChatValue,
+  currentChat: defChatValue,
 
+  messages: [],
+  messagesError: "",
+  isMessagesLoading: false,
+
+  setCurrentChat: () => { },
   setUserChatsError: () => { },
   setEditingChat: () => { },
-  getUserChats: () => { },
   deleteChat: () => { },
   createChat: () => { },
   updateChat: () => { },
@@ -28,6 +34,12 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
 
   const [users, setUsers] = useState<User[]>([]);
 
+  const [currentChat, setCurrentChat] = useState<Chat>(defChatValue);
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [messagesError, setMessagesError] = useState<string>("");
+  const [isMessagesLoading, setMessagesLoading] = useState<boolean>(false);
+
   const [editingChat, setEditingChat] = useState<EditingChat | {}>(defEditingChatValue);
   const [isShowModalChatLoader, setIsShowModalChatLoader] = useState(false);
 
@@ -35,6 +47,22 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     getUserChats();
     getUsers();
   }, [user]);
+
+  useEffect(() => {
+    getMesages();
+  }, [currentChat]);
+
+  const getMesages = async () => {
+    const curChatId = currentChat._id;
+    if (curChatId) {
+      setMessagesLoading(true);
+  
+      const res = await getRequest(`${baseUrl}/messages/${curChatId}`);
+      setMessagesLoading(false);
+      if (res.error) return setMessagesError(res.message);
+      setMessages(res.data);
+    }
+  }
 
   const getUserChats = async () => {
     setIsUserChatsLoading(true);
@@ -45,6 +73,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
       setIsUserChatsLoading(false);
       if (res.error) return setUserChatsError(res.message);
       setUserChats(res.data);
+      setCurrentChat(res.data[0]);
     }
   }
 
@@ -71,7 +100,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
       setIsShowModalChatLoader(false);
       return setUserChatsError("Cannot found chat Id ((");
     }
-  }
+  };
 
   const createChat = async (newChat: EditingChat) => {
     setIsShowModalChatLoader(true);
@@ -97,6 +126,16 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     }
   }
 
+  const handleSetCurrentChat = useCallback((chat: Chat) => {
+    setCurrentChat(chat);
+  }, []);
+  const handleSetUserChatsError = useCallback((error: string) => {
+    setUserChatsError(error);
+  }, []);
+  const handleSetEditingChat = useCallback((chat: EditingChat | {}) => {
+    setEditingChat(chat);
+  }, []);
+
   return <ChatContext.Provider value={{
     userChats,
     userChatsError,
@@ -104,10 +143,15 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     isShowModalChatLoader,
     editingChat,
     users,
+    currentChat,
 
-    setUserChatsError,
-    setEditingChat,
-    getUserChats,
+    messages,
+    messagesError,
+    isMessagesLoading,
+
+    setCurrentChat: handleSetCurrentChat,
+    setUserChatsError: handleSetUserChatsError,
+    setEditingChat: handleSetEditingChat,
     deleteChat,
     createChat,
     updateChat

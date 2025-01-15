@@ -1,6 +1,7 @@
 import { FormEvent, useContext } from "react";
-import { Col, Form, Row, Stack, Button, Alert } from "react-bootstrap";
+import { Col, Form, Row, Stack, Button } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
+import ErrorPreview from "../components/ErrorPreview";
 
 const RegisterPage = () => {
   const { registerInfo, setRegisterInfo, registerUser, registerError, isRegisterLoading } = useContext(AuthContext);
@@ -34,12 +35,9 @@ const RegisterPage = () => {
             <Button variant="dark" type="submit">
               {isRegisterLoading ? "Your account creating..." : "Register"}
             </Button>
-            {registerError ?
-              <Alert variant="danger">
-                <p className="mb-0 text-center">{registerError}</p>
-              </Alert>
-              : ""
-            }
+            <ErrorPreview
+              error={registerError}
+            />
           </Stack>
         </Col>
       </Row>

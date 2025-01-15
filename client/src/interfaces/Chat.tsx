@@ -7,9 +7,14 @@ export interface ChatContextParams {
   isShowModalChatLoader: boolean,
   editingChat: EditingChat | {},
   users: User[],
+  currentChat: Chat,
 
+  messages: Message[],
+  messagesError: string,
+  isMessagesLoading: boolean,
+
+  setCurrentChat: (chat: Chat) => void
   setUserChatsError: (error: string) => void,
-  getUserChats: () => void,
   setEditingChat: (chat: EditingChat | {}) => void,
   deleteChat: () => void,
   createChat: (newChat: EditingChat) => void,
@@ -26,4 +31,8 @@ export interface EditingChat {
   _id?: string,
   members: string[],
   name: string
+}
+
+export interface Message {
+  text: string
 }

@@ -5,8 +5,8 @@ import { ChatContext } from '../../../context/ChatContext';
 import Loader from '../../Loader';
 import Form from 'react-bootstrap/esm/Form';
 import { User } from '../../../interfaces/Auth';
-import Alert from 'react-bootstrap/esm/Alert';
 import { EditingChat } from '../../../interfaces/Chat';
+import ErrorPreview from '../../ErrorPreview';
 
 interface ChatModalProps {
   show: boolean,
@@ -82,12 +82,9 @@ function ChatFormModal({ show, setShow, onSubmit }: ChatModalProps) {
                     })}
                   </Form.Select>
                 </Form>
-                {formError ?
-                  <Alert variant="danger" className="mt-2 mb-0">
-                    <p className="mb-0 text-center">{formError}</p>
-                  </Alert>
-                  : ""
-                }
+                <ErrorPreview
+                  error={formError}
+                />
               </>
           }
         </Modal.Body>

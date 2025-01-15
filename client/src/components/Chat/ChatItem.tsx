@@ -1,23 +1,25 @@
 import { Stack } from "react-bootstrap";
 import { Card } from "react-bootstrap";
-import { User } from "../../interfaces/Auth";
 import { Chat } from "../../interfaces/Chat";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 
 interface ChatItemProps {
   chat: Chat,
-  user: User | null,
   onClickDelete: (chat: Chat) => void,
   onClickEdit: (chat: Chat) => void,
+  onClickItem: (chat: Chat) => void,
 }
 
-const ChatItem = ({ chat, user, onClickDelete, onClickEdit }: ChatItemProps) => {
+const ChatItem = ({ chat, onClickDelete, onClickEdit, onClickItem }: ChatItemProps) => {
   return (
     <Card
       className="py-2 px-2 text-start"
       style={{ minWidth: '30vw' }}
       role="button"
+      onClick={() => {
+        onClickItem(chat);
+      }}
     >
       <Stack
         direction="horizontal"

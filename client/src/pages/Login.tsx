@@ -1,6 +1,7 @@
 import { FormEvent, useContext } from "react";
-import { Col, Form, Row, Stack, Button, Alert } from "react-bootstrap";
+import { Col, Form, Row, Stack, Button } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
+import ErrorPreview from "../components/ErrorPreview";
 
 const LoginPage = () => {
   const { loginInfo, loginError, isLoginLoading, setLoginInfo, loginUser } = useContext(AuthContext);
@@ -28,12 +29,9 @@ const LoginPage = () => {
             <Button variant="dark" type="submit">
               {isLoginLoading ? "Login to your account..." : "Login"}
             </Button>
-            {loginError ?
-              <Alert variant="danger">
-                <p className="mb-0 text-center">{loginError}</p>
-              </Alert>
-              : ""
-            }
+            <ErrorPreview
+              error={loginError}
+            />
           </Stack>
         </Col>
       </Row>

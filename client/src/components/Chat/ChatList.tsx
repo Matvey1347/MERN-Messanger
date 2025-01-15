@@ -8,7 +8,7 @@ import DeleteChatModal from "./modals/DeleteChatModal";
 import ChatFormModal from "./modals/ChatFormModal";
 
 const ChatList = ({ chats, user }: { chats: Chat[], user: User | null }) => {
-  const { editingChat, setEditingChat, deleteChat, setUserChatsError, createChat, updateChat } = useContext(ChatContext);
+  const { editingChat, setEditingChat, setCurrentChat, deleteChat, setUserChatsError, createChat, updateChat } = useContext(ChatContext);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showChatFormModal, setShowChatFormModal] = useState(false);
 
@@ -31,7 +31,9 @@ const ChatList = ({ chats, user }: { chats: Chat[], user: User | null }) => {
               <ChatItem
                 key={chat._id + i}
                 chat={chat}
-                user={user}
+                onClickItem={(chat: Chat) => { 
+                  setCurrentChat(chat);
+                }}
                 onClickDelete={(chat: Chat) => {
                   setEditingChat(chat);
                   setUserChatsError("");
@@ -59,7 +61,6 @@ const ChatList = ({ chats, user }: { chats: Chat[], user: User | null }) => {
         show={showChatFormModal}
         setShow={setShowChatFormModal}
         onSubmit={async (formValues: EditingChat) => {
-          console.log(formValues);
           const userId = user?._id;
           if (userId) {
             const chat = editingChat as EditingChat;

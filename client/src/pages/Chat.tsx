@@ -4,31 +4,39 @@ import { Stack } from "react-bootstrap";
 import ChatList from "../components/Chat/ChatList";
 import { AuthContext } from "../context/AuthContext";
 import Loader from "../components/Loader";
+import ChatBox from "../components/Chat/ChatBox";
+import ErrorPreview from "../components/ErrorPreview";
 
 const ChatPage = () => {
   const {
     userChats,
     userChatsError,
     isUserChatsLoading,
-    setEditingChat
   } = useContext(ChatContext);
   const { user } = useContext(AuthContext);
 
   return (
-    <Stack direction="horizontal" gap={4}>
-      <Stack className="flex-grow-0">
-        
-        {
-          isUserChatsLoading
-            ? <Loader />
-            : <ChatList
-              chats={userChats}
-              user={user}
-            />
-        }
+    <>
+      <Stack direction="horizontal" gap={4}>
+        <Stack className="flex-grow-0">
+          
+          {
+            isUserChatsLoading
+              ? <Loader />
+              : <ChatList
+                chats={userChats}
+                user={user}
+              />
+          }
+        </Stack>
+        <ChatBox
+
+        />
       </Stack>
-      <Stack className="flex-grow-0">Chat Box</Stack>
-    </Stack>
+      <ErrorPreview
+        error={userChatsError}
+      />
+    </>
   );
 }
 
