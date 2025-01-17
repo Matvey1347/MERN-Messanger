@@ -49,6 +49,10 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password)
+    return sendResponse(res, errorMessages.allFieldsRequired, 400);
+
   try {
     let user = await userModel.findOne({ email });
 

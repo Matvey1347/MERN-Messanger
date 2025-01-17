@@ -68,6 +68,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     e.preventDefault();
     setIsLoginLoading(true);
     setLoginError("");
+    console.log(`${baseUrl}/users/login`);
     const res = await postRequest(`${baseUrl}/users/login`, JSON.stringify(loginInfo));
     const error = res.error;
 

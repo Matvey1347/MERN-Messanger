@@ -1,4 +1,4 @@
-export const baseUrl = import.meta.env.SERVER_URL + "/api";
+export const baseUrl = import.meta.env.VITE_SERVER_URL + "/api";
 
 export const postRequest = async (url: string, body: any) => {
   const response = await fetch(url, {

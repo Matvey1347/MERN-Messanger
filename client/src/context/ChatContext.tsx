@@ -60,7 +60,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     getUserChats();
     getUsers();
 
-    const newSocket = io(import.meta.env.SERVER_URL);
+    const newSocket = io(import.meta.env.VITE_SERVER_URL);
     setSocket(newSocket);
 
     return () => {
