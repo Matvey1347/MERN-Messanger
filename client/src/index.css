@@ -16,9 +16,12 @@ body {
   font-family: "Jersey 15", serif !important;
 }
 
-
 .text-color-pink {
   color: var(--main-color);
+}
+
+.css-13cymwt-control:hover {
+  border-color: var(--dark-main-color) !important;
 }
 
 .form-select:focus,

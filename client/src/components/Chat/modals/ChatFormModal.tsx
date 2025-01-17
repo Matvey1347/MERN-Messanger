@@ -95,6 +95,25 @@ function ChatFormModal({ show, setShow, onSubmit }: ChatModalProps) {
                       const selectedOptionIds = selectedOptions.map(option => option.value);
                       setFormValues({ ...formValues, members: selectedOptionIds });
                     }}
+                    styles={{
+                      control: (provided: any) => ({
+                        ...provided,
+                        borderColor: '#dee2e6',
+                        outlineColor: 'pink',
+                        boxShadow: '0 0 0 1px #dee2e6',
+                        '&:hover': {
+                          borderColor: 'pink',
+                          outlineColor: 'pink',
+                          boxShadow: '0 0 0 1px rgb(194, 149, 157)'
+                        },
+                      }),
+                      option: (provided: any, state: any) => ({
+                        ...provided,
+                        backgroundColor: state.isFocused ? 'pink' : 'white',
+                        color: state.isFocused ? 'white' : 'pink',
+                        cursor: 'pointer'
+                      }),
+                    }}
                   />
                 </Form>
                 <ErrorPreview
