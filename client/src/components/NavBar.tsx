@@ -12,11 +12,11 @@ const NavBar = () => {
         <h2>
           <Link to="/" className="link-light text-decoration-none">Chat</Link>
         </h2>
-        {user ? <span className="text-color-pink">Logged in as {user?.name}</span> : ""}
+        {user?._id ? <span className="text-color-pink">Logged in as {user?.name}</span> : ""}
         <Nav>
           <Stack direction="horizontal" gap={3}>
             <Notification />
-            {user ? (
+            {user?._id ? (
               <>
                 <Link
                   onClick={() => logoutUser()}
