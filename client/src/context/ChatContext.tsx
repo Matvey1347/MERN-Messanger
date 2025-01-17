@@ -131,6 +131,7 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
   }, [currentChat]);
 
   const getMesages = async () => {
+    if (!currentChat) return;
     const curChatId = currentChat._id;
     if (curChatId) {
       setMessagesLoading(true);

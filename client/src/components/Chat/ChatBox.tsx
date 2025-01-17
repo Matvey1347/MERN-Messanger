@@ -28,7 +28,20 @@ const ChatBox = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages])
+  }, [messages]);
+
+
+  if (!currentChat) {
+    return (
+      <Stack>
+        <Card style={{ height: '80vh', minHeight: '500px' }} className="d-flex justify-content-center align-items-center mb-4">
+          <Card.Text>
+            Unfortunately you don't have chat rooms (
+          </Card.Text>
+        </Card>
+      </Stack>
+    )
+  }
 
 
   return (

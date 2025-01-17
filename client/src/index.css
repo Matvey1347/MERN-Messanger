@@ -132,3 +132,39 @@ body {
   justify-content: center;
   border-radius: 50%;
 }
+
+.navbar {
+  height: 3.75rem;
+}
+
+.navbar .container h2 {
+  margin-bottom: 0;
+}
+
+@media (max-width: 991px) {
+  .chat-page-wrap {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 500px) {
+  .navbar .container {
+    flex-direction: column;
+  }
+
+  .navbar {
+    height: auto;
+  }
+
+  .navbar .container h2 {
+    align-self: start;
+  }
+
+    .navbar .container span {
+      margin: 10px 0;
+    }
+
+  .navbar .container .navbar-nav {
+    align-self: end;
+  }
+}

@@ -17,7 +17,7 @@ const ChatPage = () => {
 
   return (
     <>
-      <Stack direction="horizontal" gap={4}>
+      <Stack direction="horizontal" gap={4} className="chat-page-wrap">
         <Stack
           className="flex-grow-0"
           style={{ minWidth: '20vw' }}
@@ -31,9 +31,7 @@ const ChatPage = () => {
               />
           }
         </Stack>
-        <ChatBox
-
-        />
+        <ChatBox/>
       </Stack>
       <ErrorPreview
         error={userChatsError}

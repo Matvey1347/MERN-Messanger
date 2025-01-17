@@ -7,7 +7,7 @@ import Notification from "./Notification";
 const NavBar = () => {
   const { user, logoutUser } = useContext(AuthContext);
   return (
-    <Navbar bg="dark" className="mb-4" style={{ height: "3.75rem" }}>
+    <Navbar bg="dark" className="mb-4 navbar">
       <Container>
         <h2>
           <Link to="/" className="link-light text-decoration-none">Chat</Link>
