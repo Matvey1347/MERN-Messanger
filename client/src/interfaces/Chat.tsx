@@ -14,8 +14,9 @@ export interface ChatContextParams {
   isMessagesLoading: boolean,
 
   onlineUsers: OnlineUser[],
-  unreadMessages: { [chatId: string]: number },
+  notifications: Notification[],
   sendMessage: (newMessage: NewMessage) => void,
+  markAllNotificationsAsRead: () => void,
 
   setCurrentChat: (chat: Chat) => void
   setUserChatsError: (error: string) => void,
@@ -55,4 +56,11 @@ export interface NewMessage {
 export interface OnlineUser {
   socketId: string,
   userId: string
+}
+
+export interface Notification {
+  senderId: string,
+  chatId: string,
+  isRead: boolean,
+  date: Date
 }

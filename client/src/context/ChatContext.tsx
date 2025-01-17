@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { baseUrl, deleteRequest, getRequest, postRequest, putRequest } from "../utils/services";
 import { User } from "../interfaces/Auth";
-import { Chat, ChatContextParams, EditingChat, Message, NewMessage, OnlineUser } from "../interfaces/Chat";
+import { Chat, ChatContextParams, EditingChat, Message, NewMessage, Notification, OnlineUser } from "../interfaces/Chat";
 import { io } from "socket.io-client";
 
 const defEditingChatValue = { name: "", members: [] };
@@ -21,10 +21,10 @@ export const ChatContext = createContext<ChatContextParams>({
   isMessagesLoading: false,
 
   onlineUsers: [],
-  unreadMessages: {},
+  notifications: [],
   sendMessage: () => { },
 
-
+  markAllNotificationsAsRead: () => { },
   setCurrentChat: () => { },
   setUserChatsError: () => { },
   setEditingChat: () => { },
@@ -54,7 +54,10 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
   const [socket, setSocket] = useState<any>(null);
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
 
-  const [unreadMessages, setUnreadMessages] = useState<{ [chatId: string]: number }>({});
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  console.log('notifications', notifications);
+
 
   useEffect(() => {
     getUserChats();
@@ -85,7 +88,6 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     socket.emit("sendMessage", {
       message: newMessage,
       chat: currentChat,
-      user
     });
 
   }, [newMessage]);
@@ -94,25 +96,41 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     if (socket === null) return;
 
     socket.on("getMessage", (message: Message) => {
-      console.log("message", currentChat, message.chatId, currentChat._id, message.chatId === currentChat._id);
       if ((message.chatId == currentChat._id) && (message.senderId !== user?._id)) setMessages(prev => [...prev, message]);
+    });
+
+    socket.on("getHotification", (notification: Notification) => {
+      if ((notification.chatId !== currentChat._id) && (notification.senderId !== user?._id)) setNotifications(prev => [...prev, notification]);
     });
 
     return () => {
       socket.off("getMessage");
+      socket.off("getHotification");
     };
   }, [socket, currentChat]);
 
-  // const resetUnreadCount = (chatId: string) => {
-  //   setUnreadMessages(prev => ({
-  //     ...prev,
-  //     [chatId]: 0
-  //   }));
-  // };
+  const markCurrentChatNotificationsAsRead = () => {
+    setNotifications(prev => {
+      const updateNotifications = prev.map(notification => {
+        notification.isRead = notification.chatId === currentChat._id;
+        return notification;
+      });
+      return updateNotifications;
+    });
+  };
+
+  const markAllNotificationsAsRead = () => {
+    setNotifications(prev => {
+      return prev.map(notification => {
+        notification.isRead = true;
+        return notification;
+      });
+    });
+  };
 
   useEffect(() => {
     getMesages();
-    // resetUnreadCount(currentChat._id);
+    markCurrentChatNotificationsAsRead();
   }, [currentChat]);
 
   const getMesages = async () => {
@@ -219,9 +237,10 @@ export const ChatContextProvider = ({ children, user }: { children: ReactNode, u
     messagesError,
     isMessagesLoading,
 
-    unreadMessages,
+    notifications,
     onlineUsers,
     sendMessage,
+    markAllNotificationsAsRead,
 
     setCurrentChat: handleSetCurrentChat,
     setUserChatsError: handleSetUserChatsError,

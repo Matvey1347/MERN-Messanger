@@ -19,7 +19,7 @@ io.on("connection", (socket) => {
     io.emit("getOnlineUsers", onlineUsers);
   });
 
-  socket.on("sendMessage", ({ message, chat, user }) => {
+  socket.on("sendMessage", ({ message, chat }) => {
     const users = onlineUsers.filter(socketUser => {
       if (chat.members.find(memberId => memberId == socketUser.userId)) {
         return socketUser;
@@ -27,11 +27,14 @@ io.on("connection", (socket) => {
       return false;
     });
 
-    console.log("sendMessage", users, onlineUsers, message);
-
-
     users.forEach(socketUser => {
-      io.to(socketUser.socketId).emit("getMessage", { ...message, chatId: chat._id });
+      io.to(socketUser.socketId).emit("getMessage", message);
+      io.to(socketUser.socketId).emit("getHotification", { 
+        senderId: message.senderId,
+        chatId: message.chatId,
+        isRead: false,
+        date: new Date()
+       });
     });
   });
 });

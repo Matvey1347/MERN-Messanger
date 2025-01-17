@@ -12,6 +12,10 @@ body {
   font-family: "Jersey 15", serif;
 }
 
+.main-font-family {
+  font-family: "Jersey 15", serif !important;
+}
+
 
 .text-color-pink {
   color: var(--main-color);
@@ -105,4 +109,23 @@ body {
   top: 50%;
   transform: translateY(-50%);
   left: -12px;
+}
+
+.unread-message {
+  position: relative;
+}
+
+.unread-message-count {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background-color: var(--main-color);
+  color: var(--white);
+  width: 15px;
+  height: 15px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
 }

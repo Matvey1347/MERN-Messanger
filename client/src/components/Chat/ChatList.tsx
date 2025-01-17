@@ -8,7 +8,7 @@ import DeleteChatModal from "./modals/DeleteChatModal";
 import ChatFormModal from "./modals/ChatFormModal";
 
 const ChatList = ({ chats, user }: { chats: Chat[], user: User | null }) => {
-  const { editingChat, unreadMessages, setEditingChat, setCurrentChat, deleteChat, setUserChatsError, createChat, updateChat } = useContext(ChatContext);
+  const { editingChat, notifications, setEditingChat, setCurrentChat, deleteChat, setUserChatsError, createChat, updateChat } = useContext(ChatContext);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showChatFormModal, setShowChatFormModal] = useState(false);
 
@@ -31,7 +31,7 @@ const ChatList = ({ chats, user }: { chats: Chat[], user: User | null }) => {
               <ChatItem
                 key={chat._id + i}
                 chat={chat}
-                unreadMessages={unreadMessages}
+                notifications={notifications}
                 onClickItem={(chat: Chat) => { 
                   setCurrentChat(chat);
                 }}
